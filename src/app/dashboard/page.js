@@ -7,28 +7,19 @@ import SensorTable from "@/components/dashboard/SensorTable";
 import RecentActivity from "@/components/dashboard/RecentActivity";
 import AddDeviceModal from "@/components/dashboard/AddDeviceModal";
 import AddSensorModal from "@/components/dashboard/AddSensorModal";
+import useDeviceData from "@/redux/hooks/fetchDeviceData";
 
 export default function DashboardPage() {
+  useDeviceData();
   const { user } = useSelector((state) => state.auth);
   const [showDeviceModal, setShowDeviceModal] = useState(false);
   const [showSensorModal, setShowSensorModal] = useState(false);
 
-  const devices = [
-    {
-      id: "1",
-      name: "Weather Station 1",
-      obdType: "TypeA",
-      location: "Warehouse A",
-      status: "active",
-    },
-    {
-      id: "2",
-      name: "Weather Station 2",
-      obdType: "TypeB",
-      location: "Warehouse B",
-      status: "inactive",
-    },
-  ];
+  const {
+    deviceList: devices,
+    status,
+    error,
+  } = useSelector((state) => state.device);
 
   const sensorTypes = [
     {
@@ -51,12 +42,16 @@ export default function DashboardPage() {
         Welcome back, {user?.name || "Admin"}!
       </h1>
 
-      <StatCard title="Total Devices" value={devices.length} />
+      <StatCard deviceCount={devices.length} sensorCount={sensorTypes.length} />
 
+      {status === "loading" && <p>Loading devices...</p>}
+      {status === "failed" && <p>Error: {error}</p>}
+      
       <DeviceTable
         devices={devices}
         onAddClick={() => setShowDeviceModal(true)}
       />
+
       <SensorTable
         sensors={sensorTypes}
         onAddClick={() => setShowSensorModal(true)}
