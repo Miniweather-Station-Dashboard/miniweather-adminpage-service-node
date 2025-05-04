@@ -13,7 +13,6 @@ export default function ProtectedRoute({
   );
 
   useEffect(() => {
-    console.log(accessToken, verification.status, isLoading);
     if (isLoading) return; 
     
     if (!accessToken) {

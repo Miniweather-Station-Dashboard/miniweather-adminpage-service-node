@@ -40,7 +40,6 @@ apiClient.interceptors.response.use(
           `${process.env.NEXT_PUBLIC_API_BASE_URL}/v1/auth/refresh-token`,
           { refreshToken }
         );
-        console.log("Token refreshed successfully:", response.data);
         const { accessToken, refreshToken: newRefreshToken } =
           response.data.data;
 

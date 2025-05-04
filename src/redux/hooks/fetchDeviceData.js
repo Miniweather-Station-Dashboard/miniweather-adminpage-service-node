@@ -17,8 +17,6 @@ export async function fetchDevice(dispatch) {
     );
     const result = await response.json();
 
-    console.log("Device data:", result);
-
     if (result.status === "success") {
       let deviceList = [];
 
