@@ -8,9 +8,11 @@ import RecentActivity from "@/components/dashboard/RecentActivity";
 import AddDeviceModal from "@/components/dashboard/AddDeviceModal";
 import AddSensorModal from "@/components/dashboard/AddSensorModal";
 import useDeviceData from "@/redux/hooks/fetchDeviceData";
+import useSensorTypes from "@/redux/hooks/fetchSensorType";
 
 export default function DashboardPage() {
   useDeviceData();
+  useSensorTypes()
   const { user } = useSelector((state) => state.auth);
   const [showDeviceModal, setShowDeviceModal] = useState(false);
   const [showSensorModal, setShowSensorModal] = useState(false);
@@ -20,21 +22,9 @@ export default function DashboardPage() {
     status,
     error,
   } = useSelector((state) => state.device);
+  const { sensorTypes } = useSelector((state) => state.sensorType);
 
-  const sensorTypes = [
-    {
-      id: "1",
-      name: "Temperature",
-      unit: "°C",
-      description: "Measures ambient temperature",
-    },
-    {
-      id: "2",
-      name: "Humidity",
-      unit: "%",
-      description: "Measures relative humidity",
-    },
-  ];
+  
 
   return (
     <div className="p-6">
@@ -43,9 +33,6 @@ export default function DashboardPage() {
       </h1>
 
       <StatCard deviceCount={devices.length} sensorCount={sensorTypes.length} />
-
-      {status === "loading" && <p>Loading devices...</p>}
-      {status === "failed" && <p>Error: {error}</p>}
       
       <DeviceTable
         devices={devices}

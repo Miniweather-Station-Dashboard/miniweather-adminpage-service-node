@@ -29,28 +29,28 @@ export default function Sidebar() {
             </Link>
           </li>
           <li>
-            <Link
-              href="/dashboard/weather-data"
-              className="block px-4 py-2 rounded hover:bg-gray-700"
+            <span
+              className="block px-4 py-2 rounded opacity-50 cursor-not-allowed"
+              title="Disabled for now"
             >
               Weather Data
-            </Link>
+            </span>
           </li>
           <li>
-            <Link
-              href="/dashboard/users"
-              className="block px-4 py-2 rounded hover:bg-gray-700"
+            <span
+              className="block px-4 py-2 rounded opacity-50 cursor-not-allowed"
+              title="Disabled for now"
             >
               Users
-            </Link>
+            </span>
           </li>
           <li>
-            <Link
-              href="/dashboard/settings"
-              className="block px-4 py-2 rounded hover:bg-gray-700"
+            <span
+              className="block px-4 py-2 rounded opacity-50 cursor-not-allowed"
+              title="Disabled for now"
             >
               Settings
-            </Link>
+            </span>
           </li>
         </ul>
       </nav>
