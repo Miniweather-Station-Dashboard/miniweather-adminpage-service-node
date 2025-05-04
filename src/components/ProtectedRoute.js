@@ -1,23 +1,43 @@
-'use client'
-import { useEffect } from 'react'
-import { useRouter } from 'next/navigation'
-import { useSelector } from 'react-redux'
+"use client";
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { useSelector } from "react-redux";
 
-export default function ProtectedRoute({ children, requireVerification = true }) {
-  const router = useRouter()
-  const { accessToken, verification } = useSelector((state) => state.auth)
+export default function ProtectedRoute({
+  children,
+  requireVerification = true,
+}) {
+  const router = useRouter();
+  const { accessToken, verification, isLoading } = useSelector(
+    (state) => state.auth
+  );
 
   useEffect(() => {
+    console.log(accessToken, verification.status, isLoading);
+    if (isLoading) return; 
+    
     if (!accessToken) {
-      router.push('/login')
-    } else if (requireVerification && verification.status !== 'verified') {
-      router.push('/verifycode')
+      router.push("/login");
+      return;
     }
-  }, [accessToken, verification.status, requireVerification, router])
+    if (requireVerification && verification.status === "pending") {
+      router.push("/verifycode");
+      return;
+    }
+    
+  }, [accessToken, verification.status, isLoading, router, requireVerification]);
 
-  if (!accessToken || (requireVerification && verification.status !== 'verified')) {
-    return null 
+  if (isLoading) {
+    return <div>Loading...</div>; // Or your custom loading component
   }
 
-  return <>{children}</>
+  if (!accessToken) {
+    return null; // Will redirect from useEffect
+  }
+
+  if (requireVerification && verification.status === "pending") {
+    return null; // Will redirect from useEffect
+  }
+
+  return <>{children}</>;
 }

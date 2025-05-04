@@ -4,7 +4,7 @@ const initialState = {
   user: null,
   accessToken: null,
   refreshToken: null,
-  isLoading: false,
+  isLoading: true,
   error: null,
   verification: {
     status: "idle", // 'idle' | 'pending' | 'verified' | 'failed'
@@ -21,6 +21,7 @@ const authSlice = createSlice({
       state.accessToken = action.payload.accessToken;
       state.refreshToken = action.payload.refreshToken;
       state.verification.status = "verified";
+      
       if (typeof window !== "undefined") {
         localStorage.setItem("accessToken", action.payload.accessToken);
         localStorage.setItem("refreshToken", action.payload.refreshToken);
@@ -69,6 +70,7 @@ const authSlice = createSlice({
           state.accessToken = accessToken;
           state.refreshToken = refreshToken;
         }
+        state.isLoading = false;
       }
     },
   },

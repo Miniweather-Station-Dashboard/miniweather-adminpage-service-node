@@ -18,7 +18,6 @@ export default function VerifyPage() {
   const router = useRouter()
   const { verification, isLoading, error } = useSelector((state) => state.auth)
 
-  // Redirect if no email is being verified
   useEffect(() => {
     if (!verification.email) {
       router.push('/login')
@@ -111,14 +110,11 @@ export default function VerifyPage() {
                 name="code"
                 type="text"
                 inputMode="numeric"
-                pattern="[0-9]*"
                 maxLength={6}
                 required
                 value={code}
                 onChange={(e) => {
-                  if (e.target.validity.valid) {
                     setCode(e.target.value)
-                  }
                 }}
                 className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
                 placeholder="Enter 6-digit code"
