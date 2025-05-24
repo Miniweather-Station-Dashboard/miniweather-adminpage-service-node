@@ -37,12 +37,12 @@ export default function Sidebar() {
             </span>
           </li>
           <li>
-            <span
-              className="block px-4 py-2 rounded opacity-50 cursor-not-allowed"
-              title="Disabled for now"
+            <Link
+              href="/dashboard/users"
+              className="block px-4 py-2 rounded hover:bg-gray-700"
             >
-              Users
-            </span>
+              User Management
+            </Link>
           </li>
           <li>
             <span
