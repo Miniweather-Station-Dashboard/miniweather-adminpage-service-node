@@ -5,6 +5,7 @@ const initialState = {
   deviceList: [],
   status: "idle", // 'idle' | 'loading' | 'succeeded' | 'failed'
   error: null,
+  totalCount: 0,
 };
 
 const deviceSlice = createSlice({
@@ -26,6 +27,9 @@ const deviceSlice = createSlice({
     setError: (state, action) => {
       state.error = action.payload;
     },
+    setTotalCount: (state, action) => {
+      state.totalCount = action.payload;
+    },
     resetDeviceState: () => initialState,
   },
 });
@@ -36,6 +40,7 @@ export const {
   setStatus,
   setError,
   resetDeviceState,
+  setTotalCount,
 } = deviceSlice.actions;
 
 export default deviceSlice.reducer;

@@ -5,6 +5,7 @@ import {
   setDeviceList,
   setStatus,
   setError,
+  setTotalCount,
 } from "../slices/deviceSlice";
 
 export async function fetchDevice(dispatch) {
@@ -27,6 +28,7 @@ export async function fetchDevice(dispatch) {
       }
 
       dispatch(setDeviceList(deviceList));
+      dispatch(setTotalCount(result.data.totalCount || 0));
       dispatch(setActiveDevice(deviceList[0] || null));
       dispatch(setStatus("succeeded"));
     } else {

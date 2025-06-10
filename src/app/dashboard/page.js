@@ -19,6 +19,7 @@ export default function DashboardPage() {
 
   const {
     deviceList: devices,
+    totalCount,
     status,
     error,
   } = useSelector((state) => state.device);
@@ -32,7 +33,7 @@ export default function DashboardPage() {
         Welcome back, {user?.name || "Admin"}!
       </h1>
 
-      <StatCard deviceCount={devices.length} sensorCount={sensorTypes.length} />
+      <StatCard deviceCount={totalCount} sensorCount={sensorTypes.length} />
       
       <DeviceTable
         devices={devices}
