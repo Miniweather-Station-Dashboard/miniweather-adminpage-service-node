@@ -118,7 +118,6 @@ export default function AddDeviceModal({ onClose }) {
             >
               <option value="active">Active</option>
               <option value="inactive">Inactive</option>
-              <option value="maintenance">Maintenance</option>
             </select>
           </div>
 
