@@ -45,6 +45,14 @@ export default function Sidebar() {
             </Link>
           </li>
           <li>
+            <Link
+              href="/dashboard/errors"
+              className="block px-4 py-2 rounded hover:bg-gray-700"
+            >
+              Error History
+            </Link>
+          </li>
+          <li>
             <span
               className="block px-4 py-2 rounded opacity-50 cursor-not-allowed"
               title="Disabled for now"

@@ -3,6 +3,7 @@ import authReducer from './slices/authSlice'
 import deviceReducer from './slices/deviceSlice'
 import sensorTypeReducer from './slices/sensorTypeSlice'
 import userReducer from './slices/userSlice'
+import errorReducer from './slices/errorSlice'
 
 
 export const store = configureStore({
@@ -11,5 +12,6 @@ export const store = configureStore({
     device: deviceReducer,
     sensorType: sensorTypeReducer,
     users : userReducer,
+    errors: errorReducer,
   },
 });
