@@ -8,7 +8,7 @@ export default function DashboardLayout({ children }) {
       <div className="flex h-screen bg-gray-100">
         <Sidebar />
         <div className="flex-1 overflow-auto">
-          <div className="p-6">{children}</div>
+          <div className="p-6 relative">{children}</div>
         </div>
       </div>
     </ProtectedRoute>
