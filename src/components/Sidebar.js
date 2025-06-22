@@ -46,6 +46,14 @@ export default function Sidebar() {
           </li>
           <li>
             <Link
+              href="/dashboard/articles"
+              className="block px-4 py-2 rounded hover:bg-gray-700"
+            >
+              Article Management
+            </Link>
+          </li>
+          <li>
+            <Link
               href="/dashboard/errors"
               className="block px-4 py-2 rounded hover:bg-gray-700"
             >
