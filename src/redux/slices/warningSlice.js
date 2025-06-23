@@ -1,7 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-  articles: [],
+  warnings: [],
   status: "idle", // 'idle' | 'loading' | 'succeeded' | 'failed'
   error: null,
   pagination: {
@@ -11,15 +11,13 @@ const initialState = {
   },
 };
 
-const articleSlice = createSlice({
-  name: "articles",
+const warningSlice = createSlice({
+  name: "warning",
   initialState,
   reducers: {
-    setArticles: (state, action) => {
-      state.articles = action.payload.articles;
-      state.pagination.total = action.payload.total
-        ? action.payload.total
-        : state.pagination.total;
+    setWarnings: (state, action) => {
+      state.warnings = action.payload.warnings;
+      state.pagination.total = action.payload.total ? action.payload.total : state.pagination.total;
     },
     setStatus: (state, action) => {
       const validStatus = ["idle", "loading", "succeeded", "failed"];
@@ -31,18 +29,20 @@ const articleSlice = createSlice({
       state.error = action.payload;
     },
     setPagination: (state, action) => {
-      state.pagination = { ...state.pagination, ...action.payload };
+      state.pagination = {
+        ...state.pagination,
+        ...action.payload,
+      };
     },
-    resetArticleState: () => initialState,
+    resetWarningState: () => initialState,
   },
 });
 
 export const {
-  setArticles,
+  setWarnings,
   setStatus,
   setError,
   setPagination,
-  resetArticleState,
-} = articleSlice.actions;
-
-export default articleSlice.reducer;
+  resetWarningState,
+} = warningSlice.actions;
+export default warningSlice.reducer;

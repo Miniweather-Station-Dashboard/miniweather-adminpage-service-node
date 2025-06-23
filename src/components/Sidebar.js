@@ -28,13 +28,13 @@ export default function Sidebar() {
               Dashboard
             </Link>
           </li>
-          <li>
-            <span
-              className="block px-4 py-2 rounded opacity-50 cursor-not-allowed"
-              title="Disabled for now"
+           <li>
+            <Link
+              href="/dashboard/warnings"
+              className="block px-4 py-2 rounded hover:bg-gray-700"
             >
-              Weather Data
-            </span>
+              Warning Management
+            </Link>
           </li>
           <li>
             <Link

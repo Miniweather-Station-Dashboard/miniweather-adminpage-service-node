@@ -18,7 +18,7 @@ const errorSlice = createSlice({
     reducers: {
         setErrors: (state, action) => {
             state.errors = action.payload.errors;
-            state.pagination = action.payload.pagination;
+            state.pagination.total = action.payload.pagination?.total || state.pagination.total;
         },
         addError: (state, action) => {
             state.errors.push({

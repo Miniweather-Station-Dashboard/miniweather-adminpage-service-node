@@ -1,4 +1,4 @@
-export default function Pagination({ page, limit, total, onPageChange }) {
+export default function Pagination({ page, limit, total, onPageChange, title }) {
   return (
     <div className="flex items-center justify-between mt-4">
       <div className="text-sm text-gray-700">
@@ -10,7 +10,7 @@ export default function Pagination({ page, limit, total, onPageChange }) {
         <span className="font-medium">
           {Math.min(page * limit, total)}
         </span>{" "}
-        of <span className="font-medium">{total}</span> users
+        of <span className="font-medium">{total}</span> {title || "items"}
       </div>
       <div className="flex space-x-2">
         <button

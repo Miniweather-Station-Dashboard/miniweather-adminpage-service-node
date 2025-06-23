@@ -17,7 +17,7 @@ const userSlice = createSlice({
   reducers: {
     setUsers: (state, action) => {
       state.users = action.payload.users;
-      state.pagination.total = action.payload.total;
+      state.pagination.total = action.payload.total ? action.payload.total : state.pagination.total;
     },
     setPagination: (state, action) => {
       state.pagination = {

@@ -5,6 +5,7 @@ import sensorTypeReducer from './slices/sensorTypeSlice'
 import userReducer from './slices/userSlice'
 import errorReducer from './slices/errorSlice'
 import articleReducer from './slices/articleSlice'
+import warningReducer from './slices/warningSlice'
 
 
 export const store = configureStore({
@@ -14,6 +15,7 @@ export const store = configureStore({
     sensorType: sensorTypeReducer,
     users : userReducer,
     errors: errorReducer,
-    articles: articleReducer
+    articles: articleReducer,
+    warnings: warningReducer,
   },
 });
