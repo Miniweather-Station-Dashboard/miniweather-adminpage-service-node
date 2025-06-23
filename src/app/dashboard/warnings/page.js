@@ -80,7 +80,6 @@ export default function WarningManagementPage() {
     dispatch(setStatus("loading"));
     try {
       const response = await updateWarning(currentWarning.id, formData);
-      console.log("Response from updateWarning:", response);  
       if (response.status === "success") {
         dispatch(
           setWarnings({

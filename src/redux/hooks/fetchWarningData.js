@@ -13,7 +13,6 @@ export default function useWarnings(page = 1, limit = 10) {
 
       try {
         const response = await fetchWarnings(page, limit);
-        console.log("Fetched warnings:", response);
 
         if (response.status === "success" && Array.isArray(response.data.warnings)) {
           dispatch(setWarnings({
