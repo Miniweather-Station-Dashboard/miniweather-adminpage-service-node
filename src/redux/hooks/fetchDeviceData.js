@@ -14,7 +14,7 @@ export async function fetchDevice(dispatch) {
 
   try {
     const response = await fetch(
-      `${process.env.NEXT_PUBLIC_API_BASE_URL}/v1/onboarding-device`
+      `${process.env.NEXT_PUBLIC_API_BASE_URL}/v1/onboarding-device/admin`
     );
     const result = await response.json();
 

@@ -1,5 +1,16 @@
 "use client";
 
+import Select from "react-select";
+
+const typeOptions = [
+  { value: "general", label: "General" },
+  { value: "weather", label: "Weather" },
+  { value: "tsunami", label: "Tsunami" },
+  { value: "earthquake", label: "Earthquake" },
+  { value: "volcano", label: "Volcano" },
+  { value: "flood", label: "Flood" },
+];
+
 export default function WarningModal({
   mode = "create",
   show,
@@ -9,6 +20,15 @@ export default function WarningModal({
   onSubmit,
 }) {
   if (!show) return null;
+
+  const handleSelectChange = (selectedOption) => {
+    onChange({
+      target: {
+        name: "type",
+        value: selectedOption.value,
+      },
+    });
+  };
 
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black/50 z-50">
@@ -30,13 +50,13 @@ export default function WarningModal({
 
           <div>
             <label className="block text-gray-700 mb-1">Type</label>
-            <input
-              type="text"
+            <Select
               name="type"
-              value={formData.type}
-              onChange={onChange}
-              required
-              className="w-full border p-2 rounded"
+              value={typeOptions.find((option) => option.value === formData.type)}
+              onChange={handleSelectChange}
+              options={typeOptions}
+              className="react-select-container"
+              classNamePrefix="react-select"
             />
           </div>
 
@@ -48,7 +68,7 @@ export default function WarningModal({
               onChange={onChange}
               id="is_active"
             />
-            <label htmlFor="isActive" className="text-gray-700">
+            <label htmlFor="is_active" className="text-gray-700">
               Active
             </label>
           </div>

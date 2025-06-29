@@ -1,29 +1,104 @@
 import React, { useState } from "react";
 import Link from "next/link";
-import apiClient from "@/lib/apiClient";
-import { fetchDevice } from "@/redux/hooks/fetchDeviceData";
 import { useDispatch } from "react-redux";
+import { fetchDevice } from "@/redux/hooks/fetchDeviceData";
+import { deleteDevice } from "@/services/deviceService";
+import DeviceModal from "@/components/dashboard/DeviceModal";
+import { updateDevice } from "@/services/deviceService";
 
 export default function DeviceTable({ devices, onAddClick }) {
   const dispatch = useDispatch();
+
   const [deviceToDelete, setDeviceToDelete] = useState(null);
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
+
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [currentDevice, setCurrentDevice] = useState(null);
+  const [formData, setFormData] = useState({
+    name: "",
+    location: "",
+    status: "inactive",
+  });
+
+  const [locationError, setLocationError] = useState("");
+
+  const handleOpenEdit = (device) => {
+    setCurrentDevice(device);
+     let location = device.location;
+
+  if (typeof location === "string" && location.startsWith("[")) {
+    try {
+      const parsed = JSON.parse(location);
+      if (Array.isArray(parsed)) {
+        location = parsed.join(", ");
+      }
+    } catch {
+      location = location.replace(/[\[\]]/g, "").trim();
+    }
+  }
+
+  setFormData({
+    name: device.name,
+    location: location,
+    status: device.status,
+  });
+    setShowEditModal(true);
+  };
+
+  const handleCloseEdit = () => {
+    setCurrentDevice(null);
+    setShowEditModal(false);
+    setLocationError("");
+  };
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
+  const handleEditSubmit = async (e) => {
+    e.preventDefault();
+
+    const coordRegex = /^-?\d+(\.\d+)?,\s*-?\d+(\.\d+)?$/;
+    if (!coordRegex.test(formData.location)) {
+      setLocationError("Invalid format. Use: latitude, longitude");
+      return;
+    }
+    formData.location = `[${formData.location}]`
+
+    console.log("Submitting edit for device:", formData);
+
+    try {
+      const res = await updateDevice(currentDevice.id, formData);
+      if (res.status === "success") {
+        fetchDevice(dispatch);
+        handleCloseEdit();
+      } else {
+        alert("Failed to update device");
+      }
+    } catch (err) {
+      console.error(err);
+      alert("Error updating device");
+    }
+  };
 
   const handleDeleteDevice = (deviceId) => {
     setDeviceToDelete(deviceId);
-    setIsModalOpen(true);
+    setIsConfirmModalOpen(true);
   };
 
   const handleConfirmDelete = async () => {
     try {
-      const res = await apiClient.delete(`/v1/onboarding-device/${deviceToDelete}`);
-
-      if (res.data.status === "success") {
+      const res = await deleteDevice(deviceToDelete);
+      if (res.status === "success") {
         fetchDevice(dispatch);
-        setIsModalOpen(false);
+        setIsConfirmModalOpen(false);
         setDeviceToDelete(null);
       } else {
-        alert("Failed to delete device: " + (res.data.message || "Unknown error"));
+        alert("Failed to delete device: " + (res.message || "Unknown error"));
       }
     } catch (err) {
       console.error(err);
@@ -31,8 +106,8 @@ export default function DeviceTable({ devices, onAddClick }) {
     }
   };
 
-  const handleCloseModal = () => {
-    setIsModalOpen(false);
+  const handleCloseConfirmModal = () => {
+    setIsConfirmModalOpen(false);
     setDeviceToDelete(null);
   };
 
@@ -50,6 +125,7 @@ export default function DeviceTable({ devices, onAddClick }) {
             Add New Device
           </button>
         </div>
+
         <div className="overflow-x-auto">
           <table className="min-w-full divide-y divide-gray-200">
             <thead className="bg-gray-50">
@@ -81,15 +157,19 @@ export default function DeviceTable({ devices, onAddClick }) {
                       className={`px-2 py-1 rounded-full text-xs ${
                         device.status === "active"
                           ? "bg-green-100 text-green-800"
-                          : device.status === "inactive"
-                          ? "bg-gray-100 text-gray-800"
-                          : "bg-yellow-100 text-yellow-800"
+                          : "bg-gray-100 text-gray-800"
                       }`}
                     >
                       {device.status}
                     </span>
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
+                  <td className="px-6 py-4 whitespace-nowrap space-x-4">
+                    <button
+                      onClick={() => handleOpenEdit(device)}
+                      className="text-blue-600 hover:text-blue-900"
+                    >
+                      Edit
+                    </button>
                     <button
                       onClick={() => handleDeleteDevice(device.id)}
                       className="text-red-600 hover:text-red-900"
@@ -104,7 +184,18 @@ export default function DeviceTable({ devices, onAddClick }) {
         </div>
       </div>
 
-      {isModalOpen && (
+      <DeviceModal
+        mode="edit"
+        show={showEditModal}
+        currentDevice={currentDevice}
+        formData={formData}
+        onChange={handleInputChange}
+        onClose={handleCloseEdit}
+        onSubmit={handleEditSubmit}
+        locationError={locationError}
+      />
+
+      {isConfirmModalOpen && (
         <div className="fixed inset-0 bg-black/50 flex justify-center items-center z-50">
           <div className="bg-white p-6 rounded-lg shadow-lg w-96">
             <h2 className="text-lg font-medium text-gray-900">
@@ -117,7 +208,7 @@ export default function DeviceTable({ devices, onAddClick }) {
             </p>
             <div className="flex justify-end space-x-4">
               <button
-                onClick={handleCloseModal}
+                onClick={handleCloseConfirmModal}
                 className="px-4 py-2 bg-gray-300 text-gray-800 rounded hover:bg-gray-400"
               >
                 Cancel

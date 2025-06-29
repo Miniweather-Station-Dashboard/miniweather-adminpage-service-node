@@ -13,6 +13,11 @@ const poppins = Poppins({
   weight: ["400", "500", "600", "700"],
 });
 
+// export const metadata = {
+//   title: "Miniweather Station Dashboard Panel",
+//   description: "A mini weather station dashboard",
+// };
+
 
 export default function RootLayout({ children }) {
   useEffect(() => {
