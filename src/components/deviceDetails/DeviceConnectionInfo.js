@@ -1,7 +1,6 @@
 import React, { useMemo } from "react";
 
 /**
- * Renders the IoT device connection instructions.
  * @param {object} props - The component props.
  * @param {object} props.device - The device object containing id and sensors.
  */
@@ -9,15 +8,25 @@ export default function DeviceConnectionInfo({ device }) {
   const mqttTopic = `/devices/${device.id}`;
   const mqttBroker = "ws://127.0.0.0:8083/mqtt"; // Placeholder, ensure this is correct
 
+  const toSnakeCase = (str) => {
+    return str
+      .trim()
+      .replace(/([a-z])([A-Z])/g, "$1_$2")
+      .replace(/\s+/g, "_")
+      .replace(/-+/g, "_")
+      .replace(/[^\w_]/g, "")
+      .toLowerCase();
+  };
   const sensorDataExample = useMemo(() => {
     const example = {};
     if (device?.sensors && device.sensors.length > 0) {
       device.sensors.forEach((sensor) => {
+        const key = toSnakeCase(sensor.name);
         const unit = sensor.unit?.toLowerCase();
         if (unit && (unit.includes("on/off") || unit.includes("status"))) {
-          example[sensor.name] = "active";
+          example[key] = "active";
         } else {
-          example[sensor.name] = 0.0;
+          example[key] = 0.0;
         }
       });
     }

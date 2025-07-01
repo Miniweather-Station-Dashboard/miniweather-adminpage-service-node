@@ -10,7 +10,7 @@ export const fetchArticles = async (page = 1, limit = 10, isPublished, search) =
     if (isPublished !== undefined) queryParams.append("is_published", isPublished);
     if (search) queryParams.append("search", search);
 
-    const response = await apiClient.get(`/v1/articles?${queryParams.toString()}`);
+    const response = await apiClient.get(`/v1/articles/admin?${queryParams.toString()}`);
     return response.data;
   } catch (error) {
     throw error;
