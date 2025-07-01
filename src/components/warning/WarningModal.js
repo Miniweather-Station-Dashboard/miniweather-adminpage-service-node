@@ -64,7 +64,7 @@ export default function WarningModal({
             <input
               type="checkbox"
               name="is_active"
-              checked={formData.isActive}
+              checked={formData.is_active}
               onChange={onChange}
               id="is_active"
             />

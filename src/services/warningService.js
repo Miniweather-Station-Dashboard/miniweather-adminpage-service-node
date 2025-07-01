@@ -3,7 +3,7 @@ import apiClient from "@/lib/apiClient";
 // Get paginated warnings
 export const fetchWarnings = async (page = 1, limit = 10) => {
   try {
-    const response = await apiClient.get(`/v1/warnings?page=${page}&limit=${limit}`);
+    const response = await apiClient.get(`/v1/warnings/admin?page=${page}&limit=${limit}`);
     return response.data;
   } catch (error) {
     throw error;

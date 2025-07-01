@@ -130,7 +130,7 @@ export default function WarningManagementPage() {
     setFormData({
       message: warning.message,
       type: warning.type,
-      is_active: warning.is_active,
+      is_active: warning.isActive,
     });
     setShowEditModal(true);
   };
