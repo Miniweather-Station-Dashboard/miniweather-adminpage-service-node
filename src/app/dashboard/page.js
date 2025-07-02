@@ -9,10 +9,12 @@ import AddDeviceModal from "@/components/dashboard/AddDeviceModal";
 import AddSensorModal from "@/components/dashboard/AddSensorModal";
 import useDeviceData from "@/redux/hooks/fetchDeviceData";
 import useSensorTypes from "@/redux/hooks/fetchSensorType";
+import useSystemStatusSocket from "@/redux/hooks/useHyperbaseStatus";
 
 export default function DashboardPage() {
   useDeviceData();
-  useSensorTypes()
+  useSensorTypes();
+  useSystemStatusSocket();
   const { user } = useSelector((state) => state.auth);
   const [showDeviceModal, setShowDeviceModal] = useState(false);
   const [showSensorModal, setShowSensorModal] = useState(false);

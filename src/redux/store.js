@@ -6,7 +6,7 @@ import userReducer from './slices/userSlice'
 import errorReducer from './slices/errorSlice'
 import articleReducer from './slices/articleSlice'
 import warningReducer from './slices/warningSlice'
-
+import systemStatusReducer from './slices/systemStatusSlice'
 
 export const store = configureStore({
   reducer: {
@@ -17,5 +17,7 @@ export const store = configureStore({
     errors: errorReducer,
     articles: articleReducer,
     warnings: warningReducer,
+    systemStatus: systemStatusReducer,
+
   },
 });
