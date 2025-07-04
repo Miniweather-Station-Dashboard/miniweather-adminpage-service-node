@@ -1,4 +1,5 @@
 import apiClient from "@/lib/apiClient";
+import { toast } from "react-toastify";
 
 export const fetchArticles = async (page = 1, limit = 10, isPublished, search) => {
   try {
@@ -13,6 +14,7 @@ export const fetchArticles = async (page = 1, limit = 10, isPublished, search) =
     const response = await apiClient.get(`/v1/articles/admin?${queryParams.toString()}`);
     return response.data;
   } catch (error) {
+    toast.error("Failed to fetch articles.");
     throw error;
   }
 };
@@ -33,13 +35,14 @@ export const createArticle = async (articleData) => {
       headers: { "Content-Type": "multipart/form-data" },
     });
 
+    toast.success("Article created successfully.");
     return response.data;
   } catch (error) {
+    toast.error("Failed to create article.");
     throw error;
   }
 };
 
-// Update article (can also remove image)
 export const updateArticle = async (articleId, articleData) => {
   try {
     const formData = new FormData();
@@ -47,12 +50,10 @@ export const updateArticle = async (articleId, articleData) => {
     formData.append("content", articleData.content);
     formData.append("is_published", articleData.is_published);
 
-    // If image is provided
     if (articleData.headerImageFile) {
       formData.append("headerImage", articleData.headerImageFile);
     }
 
-    // If request to remove image
     if (articleData.removeHeaderImage) {
       formData.append("removeHeaderImage", "true");
     }
@@ -61,18 +62,21 @@ export const updateArticle = async (articleId, articleData) => {
       headers: { "Content-Type": "multipart/form-data" },
     });
 
+    toast.success("Article updated successfully.");
     return response.data;
   } catch (error) {
+    toast.error("Failed to update article.");
     throw error;
   }
 };
 
-// Delete article
 export const deleteArticle = async (articleId) => {
   try {
     const response = await apiClient.delete(`/v1/articles/${articleId}`);
+    toast.success("Article deleted successfully.");
     return response.data;
   } catch (error) {
+    toast.error("Failed to delete article.");
     throw error;
   }
 };
