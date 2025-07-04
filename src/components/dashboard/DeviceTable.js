@@ -69,7 +69,6 @@ export default function DeviceTable({ devices, onAddClick }) {
     }
     formData.location = `[${formData.location}]`
 
-    console.log("Submitting edit for device:", formData);
 
     try {
       const res = await updateDevice(currentDevice.id, formData);

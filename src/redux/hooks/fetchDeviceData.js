@@ -14,7 +14,6 @@ export async function fetchDevice(dispatch) {
   dispatch(setError(null));
 
   try {
-    console.log("Fetching devices from API...");
     const result = await apiClient.get(`/v1/onboarding-device/admin`);
     
     if (result.data.status === "success") {
