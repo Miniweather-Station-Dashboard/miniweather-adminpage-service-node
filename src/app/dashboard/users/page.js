@@ -55,7 +55,7 @@ export default function UserManagementPage() {
       const response = await createUser(formData);
       if (response.status === "success") {
         dispatch(setUsers({
-          users: [response.data.user, ...users],
+          users: [response.data, ...users],
           total: pagination.total + 1
         }));
         setShowCreateModal(false);
@@ -75,7 +75,7 @@ export default function UserManagementPage() {
     e.preventDefault();
     dispatch(setStatus("loading"));
     try {
-      const response = await updateUser(currentUser.id, { name: formData.name });
+      const response = await updateUser(currentUser.id, formData);
       if (response.status === "success") {
         dispatch(setUsers({
           users: users.map((user) =>
