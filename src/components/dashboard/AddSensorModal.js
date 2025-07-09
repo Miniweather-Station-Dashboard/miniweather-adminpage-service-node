@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useDispatch } from "react-redux";
 import apiClient from "@/lib/apiClient";
 import { fetchSensorTypes } from "@/redux/hooks/fetchSensorType";
+import { fetchRecentActivitiesData } from "@/redux/hooks/fetchRecentActivity";
 
 export default function AddSensorModal({ onClose }) {
   const [name, setName] = useState("");
@@ -17,6 +18,7 @@ export default function AddSensorModal({ onClose }) {
 
       if (res.data.status === "success") {
         fetchSensorTypes(dispatch);
+        fetchRecentActivitiesData(dispatch, 3, 0); 
         onClose();
       } else {
         alert("Failed to add sensor type: " + (res.data.message || "Unknown error"));

@@ -5,6 +5,7 @@ import { fetchDevice } from "@/redux/hooks/fetchDeviceData";
 import { deleteDevice } from "@/services/deviceService";
 import DeviceModal from "@/components/dashboard/DeviceModal";
 import { updateDevice } from "@/services/deviceService";
+import { fetchRecentActivitiesData } from "@/redux/hooks/fetchRecentActivity";
 
 export default function DeviceTable({ devices, onAddClick }) {
   const dispatch = useDispatch();
@@ -75,6 +76,7 @@ export default function DeviceTable({ devices, onAddClick }) {
       if (res.status === "success") {
         fetchDevice(dispatch);
         handleCloseEdit();
+        fetchRecentActivitiesData(dispatch, 3, 0); 
       } else {
         alert("Failed to update device");
       }
@@ -96,6 +98,7 @@ export default function DeviceTable({ devices, onAddClick }) {
         fetchDevice(dispatch);
         setIsConfirmModalOpen(false);
         setDeviceToDelete(null);
+        fetchRecentActivitiesData(dispatch, 3, 0); 
       } else {
         alert("Failed to delete device: " + (res.message || "Unknown error"));
       }

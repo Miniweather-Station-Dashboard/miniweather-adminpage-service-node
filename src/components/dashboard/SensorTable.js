@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import apiClient from "@/lib/apiClient";
 import { useDispatch } from "react-redux";
 import { fetchSensorTypes } from "@/redux/hooks/fetchSensorType";
+import { fetchRecentActivitiesData } from "@/redux/hooks/fetchRecentActivity";
 
 export default function SensorTable({ sensors, onAddClick }) {
   const dispatch = useDispatch();
@@ -21,6 +22,7 @@ export default function SensorTable({ sensors, onAddClick }) {
         fetchSensorTypes(dispatch);
         setIsModalOpen(false);
         setSensorToDelete(null);
+        fetchRecentActivitiesData(dispatch, 3, 0); 
       } else {
         alert(
           "Failed to delete sensor: " + (res.data.message || "Unknown error")

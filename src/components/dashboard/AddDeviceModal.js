@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import apiClient from "@/lib/apiClient";
 import Select from "react-select";
 import { fetchDevice } from "@/redux/hooks/fetchDeviceData";
+import { fetchRecentActivitiesData } from "@/redux/hooks/fetchRecentActivity";
 
 export default function AddDeviceModal({ onClose }) {
   const [name, setName] = useState("");
@@ -46,6 +47,7 @@ export default function AddDeviceModal({ onClose }) {
 
       if (res.data.status === "success") {
         fetchDevice(dispatch);
+        fetchRecentActivitiesData(dispatch, 3, 0); 
         onClose();
       } else {
         alert("Failed to add device: " + (res.data.message || "Unknown error"));
