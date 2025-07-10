@@ -20,17 +20,24 @@ export default function WarningTable({ warnings, onEdit, onDelete }) {
     setWarningToDelete(null);
   };
 
+  const formatDate = (isoDate) =>
+    new Date(isoDate).toLocaleDateString("en-GB", {
+      day: "2-digit",
+      month: "short",
+      year: "numeric",
+    });
+
   return (
     <>
       <div className="bg-white p-6 rounded-lg shadow mb-8">
         <div className="overflow-x-auto">
-          <table className="min-w-full divide-y divide-gray-200">
+          <table className="min-w-full divide-y divide-gray-200 text-sm">
             <thead className="bg-gray-50">
               <tr>
-                {["Message", "Type", "Status", "Actions"].map((h) => (
+                {["Message", "Type", "Status", "Created", "Updated", "Actions"].map((h) => (
                   <th
                     key={h}
-                    className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                    className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                   >
                     {h}
                   </th>
@@ -40,9 +47,9 @@ export default function WarningTable({ warnings, onEdit, onDelete }) {
             <tbody className="bg-white divide-y divide-gray-200">
               {warnings.map((warning) => (
                 <tr key={warning.id}>
-                  <td className="px-6 py-4 whitespace-nowrap">{warning.message}</td>
-                  <td className="px-6 py-4 whitespace-nowrap">{warning.type}</td>
-                  <td className="px-6 py-4 whitespace-nowrap">
+                  <td className="px-4 py-2 whitespace-nowrap">{warning.message}</td>
+                  <td className="px-4 py-2 whitespace-nowrap">{warning.type}</td>
+                  <td className="px-4 py-2 whitespace-nowrap">
                     <span
                       className={`px-2 py-1 rounded-full text-xs ${
                         warning.isActive
@@ -53,16 +60,22 @@ export default function WarningTable({ warnings, onEdit, onDelete }) {
                       {warning.isActive ? "Active" : "Inactive"}
                     </span>
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap space-x-4">
+                  <td className="px-4 py-2 text-xs text-gray-600 whitespace-nowrap">
+                    {formatDate(warning.createdAt)}
+                  </td>
+                  <td className="px-4 py-2 text-xs text-gray-600 whitespace-nowrap">
+                    {formatDate(warning.updatedAt)}
+                  </td>
+                  <td className="px-4 py-2 whitespace-nowrap space-x-4">
                     <button
                       onClick={() => onEdit(warning)}
-                      className="text-blue-600 hover:text-blue-900"
+                      className="text-blue-600 hover:text-blue-900 text-sm"
                     >
                       Edit
                     </button>
                     <button
                       onClick={() => handleDeleteWarning(warning.id)}
-                      className="text-red-600 hover:text-red-900"
+                      className="text-red-600 hover:text-red-900 text-sm"
                     >
                       Delete
                     </button>
@@ -78,10 +91,10 @@ export default function WarningTable({ warnings, onEdit, onDelete }) {
         <div className="fixed inset-0 bg-black/50 flex justify-center items-center z-50">
           <div className="bg-white p-6 rounded-lg shadow-lg w-96">
             <h2 className="text-lg font-medium text-gray-900">Confirm Delete</h2>
-            <p className="text-gray-600 my-4">
-              Are you sure you want to delete this warning: &#34;
-              {warnings.find((warning) => warning.id === warningToDelete)?.message}
-              &#34;?
+            <p className="text-gray-600 my-4 text-sm">
+              Are you sure you want to delete this warning: &quot;
+              {warnings.find((w) => w.id === warningToDelete)?.message}
+              &quot;?
             </p>
             <div className="flex justify-end space-x-4">
               <button

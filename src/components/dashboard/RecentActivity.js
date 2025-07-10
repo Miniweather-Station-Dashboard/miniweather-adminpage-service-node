@@ -33,9 +33,9 @@ export default function RecentActivity() {
           {activities.length > 0 ? (
             activities.map((activity, index) => (
               <div key={index} className="py-3">
-                <p className="text-sm text-gray-800">{activity.message}</p>
+                <p className="text-sm text-gray-800">{activity?.message}</p>
                 <p className="text-xs text-gray-500">
-                  {getTimeAgo(activity.created_at)}
+                  {getTimeAgo(activity?.created_at)}
                 </p>
               </div>
             ))

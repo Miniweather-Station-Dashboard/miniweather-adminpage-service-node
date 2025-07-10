@@ -17,7 +17,7 @@ export default function useArticles(page = 1, limit = 10) {
         if (response.status === "success" && Array.isArray(response.data.articles)) {
           dispatch(setArticles({
             articles: response.data.articles,
-            total: response.total
+            total: response.data.total
           }));
           dispatch(setStatus("succeeded"));
         } else {
