@@ -9,7 +9,8 @@ export default function AddDeviceModal({ onClose }) {
   const [name, setName] = useState("");
   const [location, setLocation] = useState("");
   const [status, setStatus] = useState("inactive");
-  const [locationError, setLocationError] = useState(""); 
+  const [selectedSensorTypes, setSelectedSensorTypes] = useState([]);
+  const [errors, setErrors] = useState({});
 
   const dispatch = useDispatch();
   const { sensorTypes } = useSelector((state) => state.sensorType);
@@ -18,23 +19,47 @@ export default function AddDeviceModal({ onClose }) {
     label: sensor.name,
   }));
 
-  const [selectedSensorTypes, setSelectedSensorTypes] = useState([]);
-
   const validateCoordinate = (coord) => {
     const coordRegex = /^-?\d+(\.\d+)?,\s*-?\d+(\.\d+)?$/;
     return coordRegex.test(coord);
   };
 
-  const handleSubmit = async () => {
-    setLocationError("");
-
-    if (!validateCoordinate(location)) {
-      setLocationError("Invalid format. Please use 'latitude, longitude' (e.g., '-6.200000, 106.816666').");
-      return; 
+  const validateForm = () => {
+    const newErrors = {};
+    if (!name || name.trim().length < 3) {
+      newErrors.name = "Name is required (min. 3 characters)";
+    } else if (name.length > 64) {
+      newErrors.name = "Name must be max. 64 characters";
     }
+    if (!selectedSensorTypes.length) {
+      newErrors.sensorTypes = "Select at least one sensor type";
+    }
+    if (!location) {
+      newErrors.location = "Location is required";
+    } else if (!validateCoordinate(location)) {
+      newErrors.location = "Invalid format. Use 'latitude, longitude'";
+    } else {
+      const [lat, lng] = location.split(',').map(x => parseFloat(x.trim()));
+      if (isNaN(lat) || isNaN(lng)) {
+        newErrors.location = "Latitude/longitude must be numbers";
+      } else if (lat < -90 || lat > 90) {
+        newErrors.location = "Latitude must be between -90 and 90";
+      } else if (lng < -180 || lng > 180) {
+        newErrors.location = "Longitude must be between -180 and 180";
+      }
+    }
+    if (!status) {
+      newErrors.status = "Status is required";
+    } else if (!["active", "inactive"].includes(status)) {
+      newErrors.status = "Invalid status";
+    }
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
 
+  const handleSubmit = async () => {
+    if (!validateForm()) return;
     const coordinateArray = location.split(',').map(coord => parseFloat(coord.trim()));
-
     try {
       const payload = {
         name,
@@ -42,12 +67,10 @@ export default function AddDeviceModal({ onClose }) {
         status,
         sensorTypeIds: selectedSensorTypes.map((opt) => opt.value),
       };
-
       const res = await apiClient.post("/v1/onboarding-device", payload);
-
       if (res.data.status === "success") {
         fetchDevice(dispatch);
-        fetchRecentActivitiesData(dispatch, 3, 0); 
+        fetchRecentActivitiesData(dispatch, 3, 0);
         onClose();
       } else {
         alert("Failed to add device: " + (res.data.message || "Unknown error"));
@@ -58,11 +81,19 @@ export default function AddDeviceModal({ onClose }) {
     }
   };
 
+  const handleInputChange = (setter, field) => (e) => {
+    setter(e.target.value);
+    setErrors((prev) => ({ ...prev, [field]: undefined }));
+  };
+  const handleSelectChange = (value) => {
+    setSelectedSensorTypes(value);
+    setErrors((prev) => ({ ...prev, sensorTypes: undefined }));
+  };
+
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4">
       <div className="bg-white rounded-lg p-6 w-full max-w-md">
         <h3 className="text-lg font-medium mb-4">Add New Device</h3>
-
         <div className="space-y-4">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -70,13 +101,15 @@ export default function AddDeviceModal({ onClose }) {
             </label>
             <input
               value={name}
-              onChange={(e) => setName(e.target.value)}
+              onChange={handleInputChange(setName, "name")}
               type="text"
-              className="w-full px-3 py-2 border border-gray-300 rounded-md"
+              className={`w-full px-3 py-2 border rounded-md ${errors.name ? 'border-red-500' : 'border-gray-300'}`}
               placeholder="Device name"
             />
+            {errors.name && (
+              <p className="text-red-500 text-xs mt-1">{errors.name}</p>
+            )}
           </div>
-
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
               Sensor Types
@@ -85,44 +118,45 @@ export default function AddDeviceModal({ onClose }) {
               isMulti
               options={sensorOptions}
               value={selectedSensorTypes}
-              onChange={setSelectedSensorTypes}
+              onChange={handleSelectChange}
               className="react-select-container"
               classNamePrefix="react-select"
             />
+            {errors.sensorTypes && (
+              <p className="text-red-500 text-xs mt-1">{errors.sensorTypes}</p>
+            )}
           </div>
-
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
               Location (Latitude, Longitude)
             </label>
             <input
               value={location}
-              onChange={(e) => setLocation(e.target.value)}
+              onChange={handleInputChange(setLocation, "location")}
               type="text"
-              className={`w-full px-3 py-2 border rounded-md ${
-                locationError ? 'border-red-500' : 'border-gray-300'
-              }`}
+              className={`w-full px-3 py-2 border rounded-md ${errors.location ? 'border-red-500' : 'border-gray-300'}`}
               placeholder="-6.200000, 106.816666"
             />
-            {locationError && (
-              <p className="text-red-500 text-xs mt-1">{locationError}</p>
+            {errors.location && (
+              <p className="text-red-500 text-xs mt-1">{errors.location}</p>
             )}
           </div>
-
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
               Status
             </label>
             <select
               value={status}
-              onChange={(e) => setStatus(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md"
+              onChange={handleInputChange(setStatus, "status")}
+              className={`w-full px-3 py-2 border rounded-md ${errors.status ? 'border-red-500' : 'border-gray-300'}`}
             >
               <option value="active">Active</option>
               <option value="inactive">Inactive</option>
             </select>
+            {errors.status && (
+              <p className="text-red-500 text-xs mt-1">{errors.status}</p>
+            )}
           </div>
-
           <div className="flex justify-end space-x-3 pt-4">
             <button
               onClick={onClose}

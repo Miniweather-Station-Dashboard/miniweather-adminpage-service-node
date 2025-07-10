@@ -3,6 +3,7 @@ import apiClient from "@/lib/apiClient";
 import { useDispatch } from "react-redux";
 import { fetchSensorTypes } from "@/redux/hooks/fetchSensorType";
 import { fetchRecentActivitiesData } from "@/redux/hooks/fetchRecentActivity";
+import { toast } from "react-toastify";
 
 export default function SensorTable({ sensors, onAddClick }) {
   const dispatch = useDispatch();
@@ -23,14 +24,12 @@ export default function SensorTable({ sensors, onAddClick }) {
         setIsModalOpen(false);
         setSensorToDelete(null);
         fetchRecentActivitiesData(dispatch, 3, 0); 
+        toast.success("Sensor type deleted successfully.");
       } else {
-        alert(
-          "Failed to delete sensor: " + (res.data.message || "Unknown error")
-        );
+        toast.error("Failed to delete sensor type.");
       }
     } catch (err) {
-      console.error(err);
-      alert("Error deleting sensor.");
+      toast.error(err.response?.data?.message || "Failed to delete sensor type.");
     }
   };
 
