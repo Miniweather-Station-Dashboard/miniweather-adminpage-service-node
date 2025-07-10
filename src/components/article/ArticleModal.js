@@ -12,6 +12,7 @@ export default function ArticleModal({
   currentArticle,
 }) {
   const [selectedImageName, setSelectedImageName] = useState("");
+  const [errors, setErrors] = useState({});
   const fileInputRef = useRef();
 
   useEffect(() => {
@@ -24,9 +25,36 @@ export default function ArticleModal({
 
   if (!show) return null;
 
+  function validate(form) {
+    const err = {};
+    if (!form.title || form.title.trim().length < 3) {
+      err.title = "Title is required and must be at least 3 characters.";
+    }
+    if (!form.content || form.content.trim().length < 10) {
+      err.content = "Content is required and must be at least 10 characters.";
+    }
+    if (mode === "create" && !form.headerImageFile) {
+      err.headerImageFile = "Header image is required.";
+    }
+    return err;
+  }
+
+  function handleSubmit(e) {
+    e.preventDefault();
+    const formLike = { ...formData };
+    if (mode === "create") {
+      formLike.headerImageFile = fileInputRef.current?.files?.[0] || null;
+    }
+    const err = validate(formLike);
+    setErrors(err);
+    if (Object.keys(err).length === 0) {
+      onSubmit(e);
+    }
+  }
+
   const handleFileChange = (e) => {
     const file = e.target.files[0];
-    onChange(e); // forward the event
+    onChange(e); 
     if (file) {
       setSelectedImageName(file.name);
     } else {
@@ -44,7 +72,7 @@ export default function ArticleModal({
         <h2 className="text-xl font-bold mb-4">
           {mode === "create" ? "Create Article" : "Edit Article"}
         </h2>
-        <form onSubmit={onSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <label className="block text-gray-700 mb-1">Title</label>
             <input
@@ -53,8 +81,9 @@ export default function ArticleModal({
               value={formData.title}
               onChange={onChange}
               required
-              className="w-full border p-2 rounded"
+              className={`w-full border p-2 rounded ${errors.title ? "border-red-500" : ""}`}
             />
+            {errors.title && <p className="text-red-600 text-sm mt-1">{errors.title}</p>}
           </div>
 
           <div>
@@ -74,7 +103,6 @@ export default function ArticleModal({
                     "\t" +
                     formData.content.substring(end);
 
-                  // Manually trigger onChange with new value
                   onChange({
                     target: {
                       name: "content",
@@ -82,15 +110,15 @@ export default function ArticleModal({
                     },
                   });
 
-                  // Move the cursor after the tab
                   setTimeout(() => {
                     textarea.selectionStart = textarea.selectionEnd = start + 1;
                   }, 0);
                 }
               }}
               required
-              className="w-full border p-2 rounded h-[30rem]"
+              className={`w-full border p-2 rounded h-[30rem] ${errors.content ? "border-red-500" : ""}`}
             ></textarea>
+            {errors.content && <p className="text-red-600 text-sm mt-1">{errors.content}</p>}
           </div>
 
           <div className="flex items-center space-x-2">
@@ -127,6 +155,7 @@ export default function ArticleModal({
                 onChange={handleFileChange}
                 className="hidden"
               />
+              {errors.headerImageFile && <p className="text-red-600 text-sm mt-1">{errors.headerImageFile}</p>}
             </div>
           )}
 
