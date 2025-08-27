@@ -4,20 +4,20 @@ import { useSelector, useDispatch } from "react-redux";
 import { useState, useCallback } from "react";
 import Pagination from "../../../components/Pagination";
 import useErrors from "@/redux/hooks/fetchErrorData";
+import { setPagination } from "@/redux/slices/errorSlice";
 
 export default function ErrorManagementPage() {
+  const dispatch = useDispatch();
   const { errors, status, currentError, pagination } = useSelector(
     (state) => state.errors
   );
 
-  const [currentPage, setCurrentPage] = useState(pagination?.page || 1);
-  const [limitPerPage, setLimitPerPage] = useState(pagination?.limit || 10);
+  useErrors(pagination.page, pagination.limit);
 
-  useErrors(currentPage, limitPerPage);
+  const handlePageChange = (newPage) => {
+    dispatch(setPagination({ page: newPage }));
+  };
 
-  const handlePageChange = useCallback((newPage) => {
-    setCurrentPage(newPage);
-  }, []);
 
   if (status === "loading") {
     return (
