@@ -33,7 +33,7 @@ export default function UserManagementPage() {
   const [formData, setFormData] = useState({
     name: "",
     email: "",
-    role: "user",
+    role: "admin",
   });
 
   useUsers(pagination.page, pagination.limit);
@@ -59,7 +59,7 @@ export default function UserManagementPage() {
           total: pagination.total + 1
         }));
         setShowCreateModal(false);
-        setFormData({ name: "", email: "", role: "user" });
+        setFormData({ name: "", email: "", role: "admin" });
         dispatch(setStatus("succeeded"));
       } else {
         dispatch(setError(response.message || "Failed to create user"));
