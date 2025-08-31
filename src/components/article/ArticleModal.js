@@ -1,6 +1,8 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import dynamic from "next/dynamic";
+const MarkdownEditor = dynamic(() => import("@/components/MarkdownEditor"), { ssr: false });
 
 export default function ArticleModal({
   mode = "create",
@@ -54,7 +56,7 @@ export default function ArticleModal({
 
   const handleFileChange = (e) => {
     const file = e.target.files[0];
-    onChange(e); 
+    onChange(e);
     if (file) {
       setSelectedImageName(file.name);
     } else {
@@ -81,44 +83,30 @@ export default function ArticleModal({
               value={formData.title}
               onChange={onChange}
               required
-              className={`w-full border p-2 rounded ${errors.title ? "border-red-500" : ""}`}
+              className={`w-full border p-2 rounded ${
+                errors.title ? "border-red-500" : ""
+              }`}
             />
-            {errors.title && <p className="text-red-600 text-sm mt-1">{errors.title}</p>}
+            {errors.title && (
+              <p className="text-red-600 text-sm mt-1">{errors.title}</p>
+            )}
           </div>
 
-          <div>
-            <label className="block text-gray-700 mb-1">Content</label>
-            <textarea
-              name="content"
+          <div className="min-h-[200px]">
+            <label className="block text-gray-700 mb-1">
+              Content (Markdown)
+            </label>
+            <MarkdownEditor
               value={formData.content}
               onChange={onChange}
-              onKeyDown={(e) => {
-                if (e.key === "Tab") {
-                  e.preventDefault();
-                  const textarea = e.target;
-                  const start = textarea.selectionStart;
-                  const end = textarea.selectionEnd;
-                  const newValue =
-                    formData.content.substring(0, start) +
-                    "\t" +
-                    formData.content.substring(end);
-
-                  onChange({
-                    target: {
-                      name: "content",
-                      value: newValue,
-                    },
-                  });
-
-                  setTimeout(() => {
-                    textarea.selectionStart = textarea.selectionEnd = start + 1;
-                  }, 0);
-                }
-              }}
-              required
-              className={`w-full border p-2 rounded h-[30rem] ${errors.content ? "border-red-500" : ""}`}
-            ></textarea>
-            {errors.content && <p className="text-red-600 text-sm mt-1">{errors.content}</p>}
+              errors={errors}
+              className={
+                errors.content ? "border border-red-500 rounded p-2 max-h-[200px] overflow-auto " : ""
+              }
+            />
+            {errors.content && (
+              <p className="text-red-600 text-sm mt-1">{errors.content}</p>
+            )}
           </div>
 
           <div className="flex items-center space-x-2">
@@ -155,7 +143,11 @@ export default function ArticleModal({
                 onChange={handleFileChange}
                 className="hidden"
               />
-              {errors.headerImageFile && <p className="text-red-600 text-sm mt-1">{errors.headerImageFile}</p>}
+              {errors.headerImageFile && (
+                <p className="text-red-600 text-sm mt-1">
+                  {errors.headerImageFile}
+                </p>
+              )}
             </div>
           )}
 
